@@ -1,8 +1,8 @@
-"""Add users table
+"""Add user model with flask-login
 
-Revision ID: 45db910d95a6
+Revision ID: c9b54f8128c0
 Revises: 
-Create Date: 2019-01-15 00:50:02.646647
+Create Date: 2019-01-15 01:40:25.967764
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '45db910d95a6'
+revision = 'c9b54f8128c0'
 down_revision = None
 branch_labels = None
 depends_on = None
