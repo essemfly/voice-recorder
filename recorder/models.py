@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 login_manager = LoginManager()
 db = SQLAlchemy()
 
-login_manager.login_view = 'login'
+login_manager.login_view = 'auth.login'
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
