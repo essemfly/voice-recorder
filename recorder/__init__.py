@@ -1,19 +1,32 @@
 from flask import Flask
-from .models import db, login_manager
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+from flask_login import LoginManager
 
-app = Flask(__name__, instance_relative_config=True)
-app.config.from_object('config')
-app.config.from_pyfile('config.py')
+db = SQLAlchemy()
+login = LoginManager()
+migrate = Migrate()
+login.login_view = 'auth.login'
 
-from recorder.errors import bp as errors_bp
-from recorder.auth import bp as auth_bp
-from recorder.main import bp as main_bp
 
-app.register_blueprint(errors_bp)
-app.register_blueprint(auth_bp, url_prefix='/auth')
-app.register_blueprint(main_bp)
+def create_app():
+    app = Flask(__name__, instance_relative_config=True)
+    app.config.from_object('config')
+    app.config.from_pyfile('config.py')
 
-db.init_app(app)
-login_manager.init_app(app)
+    db.init_app(app)
+    migrate.init_app(app, db)
+    login.init_app(app)
 
-from . import models
+    from recorder.errors import bp as errors_bp
+    app.register_blueprint(errors_bp)
+
+    from recorder.auth import bp as auth_bp
+    app.register_blueprint(auth_bp, url_prefix='/auth')
+
+    from recorder.main import bp as main_bp
+    app.register_blueprint(main_bp)
+
+    return app
+
+from recorder import models
