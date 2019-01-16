@@ -14,6 +14,7 @@ class Script(db.Model):
 class Voice(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(128))
+    duration = db.Column(db.Interval)
     script_id = db.Column(db.Integer, db.ForeignKey('script.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)

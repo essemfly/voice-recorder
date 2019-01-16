@@ -28,6 +28,7 @@ def upgrade():
     op.create_table('voice',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('filename', sa.String(length=128), nullable=True),
+    sa.Column('duration', sa.Interval(), nullable=True),
     sa.Column('script_id', sa.Integer(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
