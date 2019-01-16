@@ -1,8 +1,8 @@
 """Add script and voice models
 
-Revision ID: 231dbb2d55b6
+Revision ID: d8a7c37afaaf
 Revises: c9b54f8128c0
-Create Date: 2019-01-17 02:21:01.135030
+Create Date: 2019-01-17 04:19:39.236173
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '231dbb2d55b6'
+revision = 'd8a7c37afaaf'
 down_revision = 'c9b54f8128c0'
 branch_labels = None
 depends_on = None
@@ -28,6 +28,7 @@ def upgrade():
     op.create_table('voice',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('filename', sa.String(length=128), nullable=True),
+    sa.Column('sentence', sa.String(length=256), nullable=True),
     sa.Column('duration', sa.Interval(), nullable=True),
     sa.Column('script_id', sa.Integer(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
