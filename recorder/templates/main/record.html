@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{script.src_title}}</h1>
+
+<textarea style="width: 100%; height: 500px; border: 1px, solid #999999">
+  {{script.text}}
+</textarea>
+
+<h3>녹음하실 부분을 밑의 영역에 붙여 넣어주시고, 자동 변환버튼을 눌러주세요</h3>
+<textarea style="width: 100%; height: 200px; border: 1px, solid #999999"></textarea>
+
+<button type="button">문장별로 쪼개기</button>
+
+
+{% endblock %}

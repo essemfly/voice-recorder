@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>녹음 페이지입니다.</h1>
+<h2>원하시는 스크립트를 선택하여 녹음을 진행합니다.</h2>
+<ul>
+    {% for script in scripts %}
+    <li><a href="/scripts/{{script.id}}">{{script.src_title}}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}
