@@ -2,22 +2,56 @@
 
 {% block content %}
 <div id="app">
-  <h1>{{script.src_title}}</h1>
+  <v-container grid-list-md text-xs-center>
+    <h1 class="headline">{{script.src_title}}</h1>
+    <div style="margin: 30px 0;">
+      <textarea class="subheading" readonly style="width: 100%; height: 500px; border: 1.5px solid #4caf50; resize: none;">
+        {{script.text}}
+      </textarea>
+    </div>
 
-  <textarea style="width: 100%; height: 500px; border: 1px, solid #999999">
-    {{script.text}}
-  </textarea>
+    <h6 class="title" style="margin: 30px 0;">녹음하실 부분을 밑의 영역에 붙여 넣어주시고, 자동 변환버튼을 눌러주세요</h6>
+    <div style="margin: 30px 0;">
+      <textarea class="subheading" v-model="paragraph" style="width: 100%; height: 300px; border: 1.5px solid #4caf50; resize: none;"></textarea>
+    </div>
+    <v-btn outline color="indigo" @click="divideParagraph(paragraph)"> 녹음목록 생성 </v-btn>
 
-  <h3>녹음하실 부분을 밑의 영역에 붙여 넣어주시고, 자동 변환버튼을 눌러주세요</h3>
-  <textarea style="width: 100%; height: 200px; border: 1px, solid #999999"></textarea>
+    <v-card style="margin: 30px 0;">
+      <v-toolbar color="cyan" dark>
+          <v-toolbar-title dark>녹음 문구 리스트</v-toolbar-title>
+      </v-toolbar>
+      <v-list>
+        <v-list-tile v-for="sentence in sentences" :key="sentence.id" @click="">
+          [[sentence]]
+        </v-list-tile>
+      </v-list>
+    </v-card>
 
-  <button type="button">문장별로 쪼개기</button>
-  [[message]]
+  </v-container>
 </div>
 
 
 {% endblock %}
 
 {% block javascript %}
-<script type="text/javascript" src="/static/js/main/record.js"></script>
+<script type="text/javascript">
+  var app = new Vue({
+    el: '#app',
+    delimiters: ['[[', ']]'],
+    data: {
+      paragraph: "",
+      sentences: []
+    },
+    methods: {
+      divideParagraph: function (paragraph) {
+        let lines = paragraph.split(".")
+        for (let i = 0; i < lines.length; i++) {
+          if (lines[i] != "") {
+            this.sentences.push(lines[i])
+          }
+        }
+      }
+    }
+  });
+</script>
 {% endblock %}

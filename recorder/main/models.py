@@ -1,6 +1,7 @@
 from recorder import db
 from datetime import datetime
 
+
 class Script(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.Text())
@@ -8,7 +9,7 @@ class Script(db.Model):
     src_part = db.Column(db.Integer)
 
     def __repr__(self):
-        return '<Script {}>'.format(self.src_title + "-" + self.src_part)
+        return '<Script {}>'.format(self.src_title + "-" + str(self.src_part))
 
 
 class Voice(db.Model):
