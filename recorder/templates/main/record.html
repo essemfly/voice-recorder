@@ -18,7 +18,7 @@
 
     <v-card style="margin: 30px 0;">
       <v-toolbar color="cyan" dark>
-          <v-toolbar-title dark>녹음 문구 리스트</v-toolbar-title>
+        <v-toolbar-title dark>녹음 문구 리스트</v-toolbar-title>
       </v-toolbar>
       <v-list>
         <v-list-tile v-for="sentence in sentences" :key="sentence.id" @click="">
@@ -27,6 +27,9 @@
       </v-list>
     </v-card>
 
+    <audio-recorder style="margin: 0 auto;" upload-url="YOUR_API_URL" :attempts="sentences.length" :time="0.5" :headers="headers" :before-recording="callback"
+      :pause-recording="callback" :after-recording="callback" :select-record="callback" :before-upload="callback"
+      :successful-upload="callback" :failed-upload="callback" />
   </v-container>
 </div>
 
@@ -34,13 +37,20 @@
 {% endblock %}
 
 {% block javascript %}
+<script type="text/javascript" src="/static/js/lib/vue-audio-recorder.min.js"></script>
 <script type="text/javascript">
+
+  Vue.use(VueAudioRecorder)
+
   var app = new Vue({
     el: '#app',
     delimiters: ['[[', ']]'],
     data: {
       paragraph: "",
-      sentences: []
+      sentences: [],
+      headers: {
+        'X-Custom-Header': 'some data'
+      }
     },
     methods: {
       divideParagraph: function (paragraph) {
@@ -50,6 +60,9 @@
             this.sentences.push(lines[i])
           }
         }
+      },
+      callback: function (e) {
+        console.log(e)
       }
     }
   });
