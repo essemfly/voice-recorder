@@ -27,9 +27,9 @@
       </v-list>
     </v-card>
 
-    <audio-recorder style="margin: 0 auto;" upload-url="YOUR_API_URL" :attempts="sentences.length" :time="0.5" :headers="headers" :before-recording="callback"
+    <audio-recorder style="margin: 0 auto;" upload-url="/voice" :attempts="sentences.length" :time="0.5" :headers="headers" :before-recording="callback"
       :pause-recording="callback" :after-recording="callback" :select-record="callback" :before-upload="callback"
-      :successful-upload="callback" :failed-upload="callback" />
+      :successful-upload="callback" :failed-upload="failUpload" />
   </v-container>
 </div>
 
@@ -38,6 +38,8 @@
 
 {% block javascript %}
 <script type="text/javascript" src="/static/js/lib/vue-audio-recorder.min.js"></script>
+<script type="text/javascript" src="/static/js/lib/vue-resource.min.js"></script>
+
 <script type="text/javascript">
 
   Vue.use(VueAudioRecorder)
@@ -63,6 +65,9 @@
       },
       callback: function (e) {
         console.log(e)
+      },
+      failUpload: function(e) {
+        console.log(e);
       }
     }
   });
