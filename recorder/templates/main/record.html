@@ -27,9 +27,8 @@
       </v-list>
     </v-card>
 
-    <audio-recorder style="margin: 0 auto;" upload-url="/voice" :attempts="sentences.length" :time="0.5" :headers="headers" :before-recording="callback"
-      :pause-recording="callback" :after-recording="afterRecording" :select-record="callback" :before-upload="beforeUpload"
-      :successful-upload="callback" :failed-upload="failUpload" />
+    <audio-recorder style="margin: 0 auto;" :upload-url="url" :attempts="sentences.length" :time="0.5" :headers="headers"
+      :after-recording="afterRecording" />
   </v-container>
 </div>
 
@@ -50,32 +49,29 @@
     data: {
       paragraph: "",
       sentences: [],
+      record_index: 0,
       headers: {
-        'X-Custom-Header': 'some data'
-      }
+      },
+      audio: [],
+      url: "/voice/" + {{ user.id | tojson | safe }} + "/" + {{ script.id | tojson | safe }}
     },
-    methods: {
-      divideParagraph: function (paragraph) {
-        let lines = paragraph.replace(/\)/g, ".").replace(/\(/g, "").replace(/\:/g, ",").split(/\.|\n/g)
-        for (let i = 0; i < lines.length; i++) {
-          if (lines[i].trim() != "") {
-            this.sentences.push(lines[i])
-          }
+  methods: {
+    divideParagraph: function (paragraph) {
+      let lines = paragraph.replace(/\)/g, ".").replace(/\(/g, "").replace(/\:/g, ",").split(/\.|\n/g)
+      for (let i = 0; i < lines.length; i++) {
+        if (lines[i].trim() != "") {
+          this.sentences.push(lines[i])
         }
-      },
-      callback: function (e) {
-
-      },
-      afterRecording: function(e) {
-        console.log(e)
-      },
-      beforeUpload: function(e) {
-        console.log('before', e)
-      },
-      failUpload: function(e) {
-        console.log(e)
       }
-    }
+      this.paragraph = ""
+    },
+    afterRecording: function(e) {
+      e.sentence = this.sentences[this.record_index]
+      e.filename = Date.now().toString()
+      this.record_index += 1
+      return e
+    },
+  }
   });
 </script>
 {% endblock %}

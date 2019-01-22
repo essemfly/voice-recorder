@@ -2,12 +2,13 @@ import os.path
 from flask import render_template, request, current_app, redirect, url_for
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
-from recorder import basedir
+from recorder import basedir, db
 from recorder.main import bp
-from recorder.main.models import Script
+from recorder.main.models import Script, Voice
+from recorder.auth.models import User
 
 
-ALLOWED_EXTENSIONS = set(['wmv', 'mp3'])
+ALLOWED_EXTENSIONS = set(['wav', 'mp3'])
 
 
 @bp.route('/')
@@ -21,7 +22,7 @@ def index():
 @bp.route('/scripts/<int:script_id>')
 def record(script_id):
     script = Script.query.get(script_id)
-    return render_template('/main/record.html', script=script)
+    return render_template('/main/record.html', script=script, user=current_user)
 
 
 def allowed_file(filename):
@@ -29,23 +30,25 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@bp.route('/voice', methods=['GET', 'POST'])
-def upload_file():
+@bp.route('/voice/<int:user_id>/<int:script_id>', methods=['GET', 'POST'])
+def upload_file(user_id, script_id):
     if request.method == 'POST':
         # check if the post request has the file part
-        print(request.files)
-        print(request.files['audio'])
         if 'audio' not in request.files:
             return redirect(request.url)
         file = request.files['audio']
-        print(file)
+        sentence = request.form['sentence']
+        duration = request.form['duration']
         # if user does not select file, browser also
         # submit an empty part without filename
         if file.filename == '':
             return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            print(filename)
+            user = User.query.get(user_id)
             file.save(os.path.join(
-                basedir, current_app.config['UPLOAD_FOLDER'], filename))
+                basedir, current_app.config['UPLOAD_FOLDER'] + "/" + user.username, filename))
+            voice = Voice(filename = filename, sentence= sentence, duration=duration, script_id=script_id, user_id=user_id)
+            db.session.add(voice)
+            db.session.commit()
             return redirect(url_for('main.index'))
