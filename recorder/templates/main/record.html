@@ -21,8 +21,14 @@
         <v-toolbar-title dark>녹음 문구 리스트</v-toolbar-title>
       </v-toolbar>
       <v-list>
-        <v-list-tile v-for="sentence in sentences" :key="sentence.id" @click="">
-          [[sentence]]
+        <v-list-tile v-for="(sentence, index) in sentences" :key="index">
+          <v-list-tile-content>
+              <v-list-tile-title style="white-space: normal;">[[sentence]]</v-list-tile-title>
+            </v-list-tile-content>
+
+            <v-list-tile-action>
+              <v-icon @click="removeSentence(index)">backspace</v-icon>
+            </v-list-tile-action>
         </v-list-tile>
       </v-list>
     </v-card>
@@ -71,6 +77,9 @@
       this.record_index += 1
       return e
     },
+    removeSentence: function(index) {
+      this.sentences.splice(index, 1)
+    }
   }
   });
 </script>
