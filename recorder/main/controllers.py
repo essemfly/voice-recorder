@@ -1,5 +1,5 @@
 import os.path
-from flask import render_template, request, current_app, redirect, url_for
+from flask import render_template, request, current_app, redirect, url_for, json
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 from recorder import basedir, db
@@ -29,6 +29,21 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+@bp.route('/voices/<int:user_id>')
+def user(user_id):
+    voices = Voice.query.filter_by(user_id=user_id).all()
+    voices_json = []
+
+    for voice in voices:
+        voice_temp = {}
+        print('hoithoit')
+        print(voice.duration)
+        voice_temp["duration"] = str(voice.duration)
+        voice_temp["sentence"] = voice.sentence
+        voice_temp["filename"] = voice.filename
+        voices_json.append(voice_temp)
+
+    return render_template('/main/voice.html', voices=json.dumps(voices_json))
 
 @bp.route('/voice/<int:user_id>/<int:script_id>', methods=['GET', 'POST'])
 def upload_file(user_id, script_id):
