@@ -1,4 +1,7 @@
+# -*- coding: utf-8 -*-
+
 import os.path
+import datetime
 from flask import render_template, request, current_app, redirect, url_for, json
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
@@ -6,7 +9,6 @@ from recorder import basedir, db
 from recorder.main import bp
 from recorder.main.models import Script, Voice
 from recorder.auth.models import User
-
 
 ALLOWED_EXTENSIONS = set(['wav', 'mp3'])
 
@@ -36,14 +38,12 @@ def user(user_id):
 
     for voice in voices:
         voice_temp = {}
-        print('hoithoit')
-        print(voice.duration)
-        voice_temp["duration"] = str(voice.duration)
+        voice_temp["duration"] = voice.duration.total_seconds()
         voice_temp["sentence"] = voice.sentence
         voice_temp["filename"] = voice.filename
+        voice_temp["created_at"] = voice.created_at.replace(microsecond=0).isoformat()
         voices_json.append(voice_temp)
-
-    return render_template('/main/voice.html', voices=json.dumps(voices_json))
+    return render_template('/main/voice.html', voices=json.dumps(voices_json, ensure_ascii=False))
 
 @bp.route('/voice/<int:user_id>/<int:script_id>', methods=['GET', 'POST'])
 def upload_file(user_id, script_id):
