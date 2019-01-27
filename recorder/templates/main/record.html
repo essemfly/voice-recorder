@@ -73,7 +73,7 @@
     },
     afterRecording: function(e) {
       e.sentence = this.sentences[this.record_index]
-      e.filename = Date.now().toString()
+      e.filename = Date.now().toString() + ".mp3"
       this.record_index += 1
       return e
     },

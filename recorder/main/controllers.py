@@ -54,12 +54,12 @@ def upload_file(user_id, script_id):
         file = request.files['audio']
         sentence = request.form['sentence']
         duration = request.form['duration']
+        filename = request.form['filename']
         # if user does not select file, browser also
         # submit an empty part without filename
         if file.filename == '':
             return redirect(request.url)
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
             user = User.query.get(user_id)
             file.save(os.path.join(
                 basedir, current_app.config['UPLOAD_FOLDER'] + "/" + user.username, filename))
