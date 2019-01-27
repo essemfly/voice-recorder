@@ -1,7 +1,8 @@
-from flask import render_template, flash, redirect, url_for, request
+import os
+from flask import render_template, flash, redirect, url_for, request, current_app
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
-from recorder import db
+from recorder import db, basedir
 from recorder.auth import bp
 from recorder.auth.models import User
 from recorder.auth.forms import LoginForm, RegistrationForm
@@ -36,6 +37,7 @@ def register():
         db.session.add(user)
         db.session.commit()
         flash('Congratulations, you are now a registered user!')
+        os.mkdir(basedir + "/" + current_app.config['UPLOAD_FOLDER'] + "/" + user.username)
         return redirect(url_for('auth.login'))
     return render_template('auth/register.html', title='Register', form=form)
 
