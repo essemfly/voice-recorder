@@ -44,6 +44,9 @@
               <v-list-tile-content style="height: auto; overflow: auto;">
                 <v-list-tile-title style="white-space: normal; height: auto;">[[record.filename]]</v-list-tile-title>
               </v-list-tile-content>
+              <v-list-tile-action>
+                <v-icon @click="removeRecord(index)">backspace</v-icon>
+              </v-list-tile-action>
             </v-list-tile>
           </v-list>
         </v-card>
@@ -104,6 +107,9 @@
     },
     removeSentence: function(index) {
       this.sentences.splice(index, 1)
+    },
+    removeRecord: function(index) {
+      this.records.splice(index, 1)
     }
   }
   });
