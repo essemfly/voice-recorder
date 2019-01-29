@@ -16,22 +16,40 @@
     </div>
     <v-btn outline color="indigo" @click="divideParagraph(paragraph)"> 녹음목록 생성 </v-btn>
 
-    <v-card style="margin: 30px 0;">
-      <v-toolbar color="cyan" dark>
-        <v-toolbar-title dark>녹음 문구 리스트</v-toolbar-title>
-      </v-toolbar>
-      <v-list>
-        <v-list-tile v-for="(sentence, index) in sentences" :key="index">
-          <v-list-tile-content>
-              <v-list-tile-title style="white-space: normal;">[[sentence]]</v-list-tile-title>
-            </v-list-tile-content>
+    <v-layout row wrap>
+      <v-flex xs9>
+        <v-card style="margin: 30px 0;">
+          <v-toolbar color="cyan" dark>
+            <v-toolbar-title dark>녹음 문구 리스트</v-toolbar-title>
+          </v-toolbar>
+          <v-list>
+            <v-list-tile v-for="(sentence, index) in sentences" :key="index" style="height: fit-content;">
+              <v-list-tile-content style="height: auto; overflow: auto;">
+                <v-list-tile-title style="white-space: normal; height: auto;">[[sentence]]</v-list-tile-title>
+              </v-list-tile-content>
+              <v-list-tile-action>
+                <v-icon @click="removeSentence(index)">backspace</v-icon>
+              </v-list-tile-action>
+            </v-list-tile>
+          </v-list>
+        </v-card>
+      </v-flex>
+      <v-flex xs3>
+        <v-card style="margin: 30px 0;">
+          <v-toolbar color="cyan" dark>
+            <v-toolbar-title dark>녹음 결과파일</v-toolbar-title>
+          </v-toolbar>
+          <v-list>
+            <v-list-tile v-for="(record, index) in records" :key="index" style="height: fit-content;">
+              <v-list-tile-content style="height: auto; overflow: auto;">
+                <v-list-tile-title style="white-space: normal; height: auto;">[[sentence]]</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list>
+        </v-card>
+      </v-flex>
+    </v-layout>
 
-            <v-list-tile-action>
-              <v-icon @click="removeSentence(index)">backspace</v-icon>
-            </v-list-tile-action>
-        </v-list-tile>
-      </v-list>
-    </v-card>
 
     <audio-recorder style="margin: 0 auto;" :upload-url="url" :attempts="sentences.length" :time="0.5" :headers="headers"
       :after-recording="afterRecording" />
@@ -42,6 +60,12 @@
 {% endblock %}
 
 {% block javascript %}
+<style>
+  .v-list__tile {
+    min-height: 48px;
+    height: auto;
+  }
+</style>
 <script type="text/javascript" src="/static/js/lib/vue-audio-recorder.min.js"></script>
 <script type="text/javascript" src="/static/js/lib/vue-resource.min.js"></script>
 
@@ -58,7 +82,7 @@
       record_index: 0,
       headers: {
       },
-      audio: [],
+      records: [],
       url: "/voice/" + {{ user.id | tojson | safe }} + "/" + {{ script.id | tojson | safe }}
     },
   methods: {
