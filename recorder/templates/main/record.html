@@ -17,7 +17,7 @@
     <v-btn outline color="indigo" @click="divideParagraph(paragraph)"> 녹음목록 생성 </v-btn>
 
     <v-layout row wrap>
-      <v-flex xs9>
+      <v-flex xs8>
         <v-card style="margin: 30px 0;">
           <v-toolbar color="cyan" dark>
             <v-toolbar-title dark>녹음 문구 리스트</v-toolbar-title>
@@ -34,7 +34,7 @@
           </v-list>
         </v-card>
       </v-flex>
-      <v-flex xs3>
+      <v-flex xs4>
         <v-card style="margin: 30px 0;">
           <v-toolbar color="cyan" dark>
             <v-toolbar-title dark>녹음 결과파일</v-toolbar-title>
@@ -42,7 +42,7 @@
           <v-list>
             <v-list-tile v-for="(record, index) in records" :key="index" style="height: fit-content;">
               <v-list-tile-content style="height: auto; overflow: auto;">
-                <v-list-tile-title style="white-space: normal; height: auto;">[[sentence]]</v-list-tile-title>
+                <v-list-tile-title style="white-space: normal; height: auto;">[[record.filename]]</v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
           </v-list>
@@ -99,6 +99,7 @@
       e.sentence = this.sentences[this.record_index]
       e.filename = Date.now().toString() + ".mp3"
       this.record_index += 1
+      this.records.push(e)
       return e
     },
     removeSentence: function(index) {
