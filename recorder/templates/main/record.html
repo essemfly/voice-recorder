@@ -53,7 +53,7 @@
       </v-flex>
     </v-layout>
 
-
+    <v-btn outline color="success" @click="upload()">Upload All</v-btn>
     <audio-recorder style="margin: 0 auto;" :upload-url="url" :attempts="sentences.length" :time="0.5" :headers="headers"
       :after-recording="afterRecording" />
   </v-container>
@@ -110,6 +110,26 @@
     },
     removeRecord: function(index) {
       this.records.splice(index, 1)
+    },
+    upload: function() {
+      for (let i = 0; i < this.records.length; i++) {
+        let headers = Object.assign(this.headers, {})
+        let data = new FormData()
+
+        data.append('audio', this.records[i].blob, `${this.records[i].filename}.mp3`)
+        data.append('duration', this.records[i].duration)
+        data.append('sentence', this.records[i].sentence)
+        data.append('filename', this.records[i].filename)
+
+        headers['Content-Type'] = `multipart/form-data; boundary=${data._boundary}`
+
+        this.$http.post(this.url, data, { headers: headers }).then(resp => {
+          console.log('succeess')
+        }).catch(error => {
+          console.log('fail')
+          alert("some request is failed")
+        })
+      }
     }
   }
   });
