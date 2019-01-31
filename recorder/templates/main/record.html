@@ -22,7 +22,7 @@
           <v-toolbar color="cyan" dark>
             <v-toolbar-title dark>녹음 문구 리스트</v-toolbar-title>
           </v-toolbar>
-          <v-list>
+          <v-list style="height: 500px; overflow: auto;">
             <v-list-tile v-for="(sentence, index) in sentences" :key="index" style="height: fit-content;">
               <v-list-tile-content style="height: auto; overflow: auto;">
                 <v-list-tile-title style="white-space: normal; height: auto;">[[sentence]]</v-list-tile-title>
@@ -39,7 +39,7 @@
           <v-toolbar color="cyan" dark>
             <v-toolbar-title dark>녹음 결과파일</v-toolbar-title>
           </v-toolbar>
-          <v-list>
+          <v-list style="height: 500px; overflow: auto;">
             <v-list-tile v-for="(record, index) in records" :key="index" style="height: fit-content;">
               <v-list-tile-content style="height: auto; overflow: auto;">
                 <v-list-tile-title style="white-space: normal; height: auto;">[[record.filename]]</v-list-tile-title>

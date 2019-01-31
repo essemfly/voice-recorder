@@ -26,6 +26,11 @@ def record(script_id):
     script = Script.query.get(script_id)
     return render_template('/main/record.html', script=script, user=current_user)
 
+@bp.route('/scripts/seq/<int:script_id>')
+def record_seq(script_id):
+    script = Script.query.get(script_id)
+    return render_template('/main/record_seq.html', script=script, user=current_user)
+
 
 def allowed_file(filename):
     return '.' in filename and \
