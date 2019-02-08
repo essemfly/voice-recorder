@@ -21,6 +21,10 @@ def create_app():
     migrate.init_app(app, db)
     login.init_app(app)
 
+    if not app.config['SSL_DISABLE']:
+        from flask_sslify import SSLify
+        sslify = SSLify(app)
+
     from recorder.errors import bp as errors_bp
     app.register_blueprint(errors_bp)
 
