@@ -23,24 +23,25 @@
         class="elevation-1" style="width: 100%; margin: 20px 0;">
         <template slot="items" slot-scope="props">
           <td class="text-xs-center">[[ props.index ]]</td>
-          <td class="text-xs-left">[[ props.item.sentence ]]</td>
+          <td class="text-xs-left" style="min-width: 60%;">[[ props.item.sentence ]]</td>
           <td class="text-xs-right">[[ props.item.duration ]]</td>
-          <td class="text-xs-right">[[ props.item.url ]]</td>
-          <td class="text-xs-right">[[ props.item.filename ]]</td>
+          <!-- <td class="text-xs-right">[[ props.item.url ]]</td> -->
+          <!-- <td class="text-xs-right">[[ props.item.filename ]]</td> -->
           <td class="text-xs-right">
-            <v-btn outline color="indigo" @click="removeRecord(props.index)" v-show="record_index-props.index==1"> 녹음 삭제
+            <v-btn small outline color="indigo" @click="removeRecord(props.index)" v-show="record_index-props.index==1"> 녹음 삭제
             </v-btn>
           </td>
           <td class="text-xs-right">
-            <v-btn outline color="indigo" @click="removeSentence(props.index)"> 전체 삭제 </v-btn>
+            <v-btn small outline color="indigo" @click="removeSentence(props.index)"> 전체 삭제 </v-btn>
           </td>
         </template>
       </v-data-table>
     </v-layout>
 
-    <v-btn outline color="success" @click="upload()">Upload All</v-btn>
-    <audio-recorder style="margin: 0 auto;" :upload-url="url" :attempts="records.length" :time="0.5"
+    <audio-recorder style="margin: 20px auto;" :upload-url="url" :attempts="records.length" :time="0.5"
       :headers="http_headers" :after-recording="afterRecording" />
+
+    <v-btn outline color="success" @click="upload()">Upload All</v-btn>
   </v-container>
 </div>
 
@@ -78,43 +79,50 @@
         {
           text: "index",
           align: "center",
-          sortable: false
+          sortable: false,
+          width: "2%",
         },
         {
           text: "sentence",
           align: "left",
           sortable: false,
-          value: "sentence"
+          value: "sentence",
+          width: "60%",
         },
         {
           text: "duration",
           align: "center",
           sortable: false,
-          value: "duration"
+          value: "duration",
+          width: "5%",
         },
-        {
-          text: "url",
-          align: "right",
-          sortable: false,
-          value: "url"
-        },
-        {
-          text: "filename",
-          align: "right",
-          sortable: false,
-          value: "filename"
-        },
+        // {
+        //   text: "url",
+        //   align: "right",
+        //   sortable: false,
+        //   value: "url",
+        //   width: "13%",
+        // },
+        // {
+        //   text: "filename",
+        //   align: "right",
+        //   sortable: false,
+        //   value: "filename",
+        //   width: "10%",
+        // },
         {
           text: "delete record",
           align: "center",
           sortable: false,
-          value: ""
+          value: "",
+          width: "5%",
         },
         {
           text: "delete all",
           align: "center",
           sortable: false,
-          value: ""
+          value: "",
+          width: "5%",
         }
       ],
       http_headers: {
@@ -167,7 +175,7 @@
       }
     },
     upload: function() {
-      for (let i = 0; i < this.records.length; i++) {
+      for (let i = 0; i < this.record_index; i++) {
         let headers = {}
         let data = new FormData()
 
