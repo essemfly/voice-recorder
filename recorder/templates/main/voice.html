@@ -5,7 +5,7 @@
   <v-container grid-list-md text-xs-center>
     <h1 class="headline">녹음 내역</h1>
 
-    <v-data-table :headers="headers" :items="voices" class="elevation-1">
+    <v-data-table :headers="headers" :items="voices" :rows-per-page-items="rows_per_page" class="elevation-1">
       <template slot="items" slot-scope="props">
         <td class="text-xs-right">[[ props.item.duration ]]</td>
         <td class="text-xs-right">[[ props.item.sentence ]]</td>
@@ -31,6 +31,7 @@
         { text: '파일명', value: 'filename', sortable: false },
         { text: '생성날짜', value: 'created_at', sortable: false},
       ],
+      rows_per_page: [100, 50, 25],
       voices: {{ voices|safe }},
       hoit: {{ voices|safe }}
     },
