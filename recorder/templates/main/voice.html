@@ -8,9 +8,9 @@
     <h6 class="subheading" style="margin-bottom: 20px;">총 녹음시간: [[time]] </h6>
     <v-data-table :headers="headers" :items="voices" :rows-per-page-items="rows_per_page" class="elevation-1">
       <template slot="items" slot-scope="props">
+        <td class="text-xs-right">[[ props.item.duration ]]s</td>
         <td class="text-xs-right">[[ props.item.sentence ]]</td>
         <td class="text-xs-right">[[ props.item.filename ]]</td>
-        <td class="text-xs-right">[[ props.item.duration ]]초</td>
         <td class="text-xs-right">[[ props.item.created_at ]]</td>
       </template>
     </v-data-table>

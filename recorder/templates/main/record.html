@@ -124,12 +124,13 @@
         headers['Content-Type'] = `multipart/form-data; boundary=${data._boundary}`
 
         this.$http.post(this.url, data, { headers: headers }).then(resp => {
-          console.log('succeess')
+          console.log('succeess', resp)
         }).catch(error => {
-          console.log('fail')
+          console.log('fail', error)
           alert("some request is failed")
         })
       }
+      alert("All upload is completed")
     }
   }
   });
