@@ -5,57 +5,42 @@
   <v-container grid-list-md text-xs-center>
     <h1 class="headline">{{script.src_title}}</h1>
     <div style="margin: 30px 0;">
-      <textarea class="subheading" readonly style="width: 100%; height: 500px; border: 1.5px solid #4caf50; resize: none;">
+      <textarea class="subheading" readonly
+        style="width: 100%; height: 500px; border: 1.5px solid #4caf50; resize: none;">
         {{script.text}}
       </textarea>
     </div>
 
     <h6 class="title" style="margin: 30px 0;">녹음하실 부분을 밑의 영역에 붙여 넣어주시고, 자동 변환버튼을 눌러주세요</h6>
     <div style="margin: 30px 0;">
-      <textarea class="subheading" v-model="paragraph" style="width: 100%; height: 300px; border: 1.5px solid #4caf50; resize: none;"></textarea>
+      <textarea class="subheading" v-model="paragraph"
+        style="width: 100%; height: 300px; border: 1.5px solid #4caf50; resize: none;"></textarea>
     </div>
     <v-btn outline color="indigo" @click="divideParagraph(paragraph)"> 녹음목록 생성 </v-btn>
 
     <v-layout row wrap>
-      <v-flex xs8>
-        <v-card style="margin: 30px 0;">
-          <v-toolbar color="cyan" dark>
-            <v-toolbar-title dark>녹음 문구 리스트</v-toolbar-title>
-          </v-toolbar>
-          <v-list style="height: 500px; overflow: auto;">
-            <v-list-tile v-for="(sentence, index) in sentences" :key="index" style="height: fit-content;">
-              <v-list-tile-content style="height: auto; overflow: auto;">
-                <v-list-tile-title style="white-space: normal; height: auto;">[[sentence]]</v-list-tile-title>
-              </v-list-tile-content>
-              <v-list-tile-action>
-                <v-icon @click="removeSentence(index)">backspace</v-icon>
-              </v-list-tile-action>
-            </v-list-tile>
-          </v-list>
-        </v-card>
-      </v-flex>
-      <v-flex xs4>
-        <v-card style="margin: 30px 0;">
-          <v-toolbar color="cyan" dark>
-            <v-toolbar-title dark>녹음 결과파일</v-toolbar-title>
-          </v-toolbar>
-          <v-list style="height: 500px; overflow: auto;">
-            <v-list-tile v-for="(record, index) in records" :key="index" style="height: fit-content;">
-              <v-list-tile-content style="height: auto; overflow: auto;">
-                <v-list-tile-title style="white-space: normal; height: auto;">[[record.filename]]</v-list-tile-title>
-              </v-list-tile-content>
-              <v-list-tile-action>
-                <v-icon @click="removeRecord(index)">backspace</v-icon>
-              </v-list-tile-action>
-            </v-list-tile>
-          </v-list>
-        </v-card>
-      </v-flex>
+      <v-data-table :headers="table_headers" :items="records" :pagination.sync="pagination" :rows-per-page-items=10
+        class="elevation-1" style="width: 100%; margin: 20px 0;">
+        <template slot="items" slot-scope="props">
+          <td class="text-xs-center">[[ props.index ]]</td>
+          <td class="text-xs-left">[[ props.item.sentence ]]</td>
+          <td class="text-xs-right">[[ props.item.duration ]]</td>
+          <td class="text-xs-right">[[ props.item.url ]]</td>
+          <td class="text-xs-right">[[ props.item.filename ]]</td>
+          <td class="text-xs-right">
+            <v-btn outline color="indigo" @click="removeRecord(props.index)" v-show="record_index-props.index==1"> 녹음 삭제
+            </v-btn>
+          </td>
+          <td class="text-xs-right">
+            <v-btn outline color="indigo" @click="removeSentence(props.index)"> 전체 삭제 </v-btn>
+          </td>
+        </template>
+      </v-data-table>
     </v-layout>
 
     <v-btn outline color="success" @click="upload()">Upload All</v-btn>
-    <audio-recorder style="margin: 0 auto;" :upload-url="url" :attempts="sentences.length" :time="0.5" :headers="headers"
-      :after-recording="afterRecording" />
+    <audio-recorder style="margin: 0 auto;" :upload-url="url" :attempts="records.length" :time="0.5"
+      :headers="http_headers" :after-recording="afterRecording" />
   </v-container>
 </div>
 
@@ -67,6 +52,11 @@
   .v-list__tile {
     min-height: 48px;
     height: auto;
+  }
+
+  .v-table__overflow {
+    height: 500px;
+    overflow-y: scroll;
   }
 </style>
 <script type="text/javascript" src="/static/js/lib/vue-audio-recorder.min.js"></script>
@@ -80,11 +70,58 @@
     el: '#app',
     delimiters: ['[[', ']]'],
     data: {
-      paragraph: "",
-      sentences: [],
-      record_index: 0,
-      headers: {
+      pagination: {
+        page: 0,
+        rowsPerPage: -1
       },
+      table_headers: [
+        {
+          text: "index",
+          align: "center",
+          sortable: false
+        },
+        {
+          text: "sentence",
+          align: "left",
+          sortable: false,
+          value: "sentence"
+        },
+        {
+          text: "duration",
+          align: "center",
+          sortable: false,
+          value: "duration"
+        },
+        {
+          text: "url",
+          align: "right",
+          sortable: false,
+          value: "url"
+        },
+        {
+          text: "filename",
+          align: "right",
+          sortable: false,
+          value: "filename"
+        },
+        {
+          text: "delete record",
+          align: "center",
+          sortable: false,
+          value: ""
+        },
+        {
+          text: "delete all",
+          align: "center",
+          sortable: false,
+          value: ""
+        }
+      ],
+      http_headers: {
+      },
+      rows_per_page: [3, 20, 10],
+      paragraph: "",
+      record_index: 0,
       records: [],
       url: "/voice/" + {{ user.id | tojson | safe }} + "/" + {{ script.id | tojson | safe }}
     },
@@ -93,27 +130,45 @@
       let lines = paragraph.replace(/\)/g, ".").replace(/\(/g, "").replace(/\:/g, ",").split(/\.|\n/g)
       for (let i = 0; i < lines.length; i++) {
         if (lines[i].trim() != "") {
-          this.sentences.push(lines[i])
+          this.records.push({
+            sentence: lines[i],
+            filename: "",
+            blob: {},
+            url: "",
+            duration: 0
+          })
         }
       }
       this.paragraph = ""
     },
     afterRecording: function(e) {
-      e.sentence = this.sentences[this.record_index]
-      e.filename = Date.now().toString() + ".mp3"
+      this.records[this.record_index].filename = Date.now().toString() + ".mp3"
+      this.records[this.record_index].duration = e.duration
+      this.records[this.record_index].blob = e.blob
+      this.records[this.record_index].url = e.url
       this.record_index += 1
-      this.records.push(e)
       return e
     },
     removeSentence: function(index) {
-      this.sentences.splice(index, 1)
+      this.records.splice(index, 1)
     },
     removeRecord: function(index) {
-      this.records.splice(index, 1)
+      if (this.records[index].filename != "") {
+        let temp = {
+          sentence: this.records[index].sentence,
+          filename: "",
+          blob: {},
+          url: "",
+          duration: 0
+        }
+        this.records.splice(index, 1)
+        this.records.splice(index, 0, temp)
+        this.record_index -= 1
+      }
     },
     upload: function() {
       for (let i = 0; i < this.records.length; i++) {
-        let headers = Object.assign(this.headers, {})
+        let headers = {}
         let data = new FormData()
 
         data.append('audio', this.records[i].blob, `${this.records[i].filename}.mp3`)
