@@ -9,6 +9,7 @@ from recorder import basedir, db
 from recorder.main import bp
 from recorder.main.models import Script, Voice
 from recorder.auth.models import User
+from functools import reduce
 
 ALLOWED_EXTENSIONS = set(['wav', 'mp3'])
 
@@ -40,15 +41,20 @@ def allowed_file(filename):
 def user(user_id):
     voices = Voice.query.filter_by(user_id=user_id).all()
     voices_json = []
+    seconds = 0
 
     for voice in voices:
+        print('hoit', voice.duration)
         voice_temp = {}
         voice_temp["duration"] = voice.duration.total_seconds()
         voice_temp["sentence"] = voice.sentence
         voice_temp["filename"] = voice.filename
         voice_temp["created_at"] = voice.created_at.replace(microsecond=0).isoformat()
         voices_json.append(voice_temp)
-    return render_template('/main/voice.html', voices=json.dumps(voices_json, ensure_ascii=False))
+        seconds += voice.duration.total_seconds()
+    
+    print(seconds)
+    return render_template('/main/voice.html', voices=json.dumps(voices_json, ensure_ascii=False), total_seconds=seconds)
 
 @bp.route('/voice/<int:user_id>/<int:script_id>', methods=['GET', 'POST'])
 def upload_file(user_id, script_id):

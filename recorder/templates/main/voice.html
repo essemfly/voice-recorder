@@ -3,13 +3,14 @@
 {% block content %}
 <div id="app">
   <v-container grid-list-md text-xs-center>
-    <h1 class="headline">녹음 내역</h1>
+    <h1 class="headline" style="margin-bottom: 20px;">녹음 내역</h1>
 
+    <h6 class="subheading" style="margin-bottom: 20px;">총 녹음시간: [[time]] </h6>
     <v-data-table :headers="headers" :items="voices" :rows-per-page-items="rows_per_page" class="elevation-1">
       <template slot="items" slot-scope="props">
-        <td class="text-xs-right">[[ props.item.duration ]]</td>
         <td class="text-xs-right">[[ props.item.sentence ]]</td>
         <td class="text-xs-right">[[ props.item.filename ]]</td>
+        <td class="text-xs-right">[[ props.item.duration ]]초</td>
         <td class="text-xs-right">[[ props.item.created_at ]]</td>
       </template>
     </v-data-table>
@@ -33,10 +34,11 @@
       ],
       rows_per_page: [100, 50, 25],
       voices: {{ voices|safe }},
-      hoit: {{ voices|safe }}
+      time: new Date(null)
     },
-    created: function() {
-      console.log(this.hoit)
+    mounted: function() {
+      this.time.setSeconds({{total_seconds}});
+      this.time = this.time.toISOString().substr(11, 8);
     }
   })
 </script>
