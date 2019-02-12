@@ -10,8 +10,13 @@ manager.add_command('db', MigrateCommand)
 
 
 @manager.command
-def seed():
-    fixture.seed()
+def seed_first():
+    fixture.add_worlds_within()
+
+
+@manager.command
+def seed_second():
+    fixture.add_lyrics_2018_first()
 
 
 manager.run()
