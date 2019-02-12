@@ -79,11 +79,16 @@ def upload_file(user_id, script_id):
         # submit an empty part without filename
         if file.filename == '':
             return redirect(request.url)
-        if file and allowed_file(file.filename):
-            file.save(os.path.join(
-                basedir, current_app.config['UPLOAD_FOLDER'] + "/" + user.username, filename))
-            voice = Voice(filename=filename, sentence=sentence,
-                          duration=duration, script_id=script_id, user_id=user_id)
-            db.session.add(voice)
-            db.session.commit()
-            return jsonify(success=True)
+        if file and allowed_file(filename):
+            exists = Voice.query.filter_by(
+                user_id=user_id, filename=filename).first()
+            if exists is None:
+                file.save(os.path.join(
+                    basedir, current_app.config['UPLOAD_FOLDER'] + "/" + user.username, filename))
+                voice = Voice(filename=filename, sentence=sentence,
+                              duration=duration, script_id=script_id, user_id=user_id)
+                db.session.add(voice)
+                db.session.commit()
+                return jsonify(success=True)
+            else:
+                return jsonify(success=False, reason="Filename already exists")
