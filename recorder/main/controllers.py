@@ -40,7 +40,10 @@ def allowed_file(filename):
 
 
 @bp.route('/voices/<int:user_id>')
+@login_required
 def user(user_id):
+    if current_user.id != user_id:
+        return redirect(url_for('auth.logout'))
     voices = Voice.query.filter_by(user_id=user_id).all()
     voices_json = []
     seconds = 0
@@ -58,9 +61,13 @@ def user(user_id):
     return render_template('/main/voice.html', voices=json.dumps(voices_json, ensure_ascii=False), total_seconds=seconds)
 
 
-@bp.route('/voice/<int:user_id>/<int:script_id>', methods=['GET', 'POST'])
+@bp.route('/voice/<int:user_id>/<int:script_id>', methods=['POST'])
+@login_required
 def upload_file(user_id, script_id):
+    if current_user.id != user_id:
+        return redirect(url_for('auth.logout'))
     if request.method == 'POST':
+        user = User.query.get(user_id)
         # check if the post request has the file part
         if 'audio' not in request.files:
             return redirect(request.url)
@@ -73,7 +80,6 @@ def upload_file(user_id, script_id):
         if file.filename == '':
             return redirect(request.url)
         if file and allowed_file(file.filename):
-            user = User.query.get(user_id)
             file.save(os.path.join(
                 basedir, current_app.config['UPLOAD_FOLDER'] + "/" + user.username, filename))
             voice = Voice(filename=filename, sentence=sentence,
