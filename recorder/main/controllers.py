@@ -84,7 +84,7 @@ def upload_file(user_id, script_id):
                 user_id=user_id, filename=filename).first()
             if exists is None:
                 file.save(os.path.join(
-                    basedir, current_app.config['UPLOAD_FOLDER'] + "/" + user.username + "/data", filename))
+                    basedir, current_app.config['UPLOAD_FOLDER'] + "/" + user.username + "/audio", filename))
                 voice = Voice(filename=filename, sentence=sentence,
                               duration=duration, script_id=script_id, user_id=user_id)
                 db.session.add(voice)

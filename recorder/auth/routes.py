@@ -38,7 +38,7 @@ def register():
         db.session.commit()
         flash('Congratulations, you are now a registered user!')
         os.mkdir(basedir + "/" + current_app.config['UPLOAD_FOLDER'] + "/" + user.username)
-        os.mkdir(basedir + "/" + current_app.config['UPLOAD_FOLDER'] + "/" + user.username + "/data")
+        os.mkdir(basedir + "/" + current_app.config['UPLOAD_FOLDER'] + "/" + user.username + "/audio")
         return redirect(url_for('auth.login'))
     return render_template('auth/register.html', title='Register', form=form)
 
